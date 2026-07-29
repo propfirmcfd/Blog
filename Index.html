@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PropFirm CFD Blog – Daily Prop Trading Updates</title>
+  <meta name="description" content="Daily updates on prop firm evaluation plans, funding rules, leverage limits & profit targets. Stay ahead in the funded trading world."/>
+  <meta property="og:title" content="PropFirm CFD Blog"/>
+  <meta property="og:description" content="Daily prop firm news, reviews and funded trader strategies."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0b0f1a;
+      --surface:   #111827;
+      --card:      #161d2e;
+      --border:    #1e2d45;
+      --accent:    #00d4aa;
+      --accent2:   #3b82f6;
+      --red:       #ef4444;
+      --green:     #22c55e;
+      --text:      #e2e8f0;
+      --muted:     #64748b;
+      --mono:      'IBM Plex Mono', monospace;
+      --sans:      'Space Grotesk', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── TICKER ── */
+    .ticker-wrap {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      padding: 8px 0;
+    }
+    .ticker-track {
+      display: flex;
+      gap: 60px;
+      animation: ticker 28s linear infinite;
+      white-space: nowrap;
+    }
+    .ticker-track span {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .ticker-track .up   { color: var(--green); }
+    .ticker-track .down { color: var(--red); }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 32px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      padding: 80px 32px 64px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0,212,170,.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 80% 80%, rgba(59,130,246,.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(0,212,170,.1);
+      border: 1px solid rgba(0,212,170,.3);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 6vw, 64px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      max-width: 760px;
+      margin: 0 auto 20px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero p {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 520px;
+      margin: 0 auto 36px;
+    }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+      padding: 13px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 14px;
+      transition: opacity .2s;
+    }
+    .btn-primary:hover { opacity: .85; }
+    .btn-outline {
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 13px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 14px;
+      transition: border-color .2s;
+    }
+    .btn-outline:hover { border-color: var(--accent); }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .stat {
+      padding: 24px 40px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-num {
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--accent);
+    }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    /* ── MAIN LAYOUT ── */
+    .main-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 56px 24px;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 40px;
+      align-items: start;
+    }
+    @media(max-width:900px){
+      .main-wrap { grid-template-columns: 1fr; }
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .section-header h2 { font-size: 20px; font-weight: 600; }
+    .section-header .line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: rgba(0,212,170,.1);
+      color: var(--accent);
+      border: 1px solid rgba(0,212,170,.25);
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    /* ── FEATURED POST ── */
+    .featured-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      transition: border-color .2s;
+    }
+    .featured-card:hover { border-color: var(--accent); }
+    .featured-img {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, #0f2744 0%, #0b1e38 50%, #0d1b2f 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+      position: relative;
+    }
+    .featured-img::after {
+      content: 'FEATURED';
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      font-family: var(--mono);
+      font-size: 10px;
+      background: var(--accent);
+      color: #000;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    .featured-body { padding: 24px; }
+    .post-meta {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .category-tag {
+      font-size: 11px;
+      font-family: var(--mono);
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    .cat-review   { background: rgba(59,130,246,.15); color: #60a5fa; }
+    .cat-news     { background: rgba(0,212,170,.12);  color: var(--accent); }
+    .cat-strategy { background: rgba(168,85,247,.15); color: #c084fc; }
+    .cat-warning  { background: rgba(239,68,68,.15);  color: #f87171; }
+    .post-date { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+    .featured-body h3 {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -.4px;
+      margin-bottom: 10px;
+    }
+    .featured-body h3 a { color: var(--text); text-decoration: none; }
+    .featured-body h3 a:hover { color: var(--accent); }
+    .featured-body p { color: var(--muted); font-size: 14px; line-height: 1.7; margin-bottom: 18px; }
+    .read-more {
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      font-family: var(--mono);
+    }
+    .read-more:hover { text-decoration: underline; }
+
+    /* ── POST LIST ── */
+    .post-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 16px;
+      align-items: start;
+      transition: border-color .2s, transform .15s;
+    }
+    .post-card:hover { border-color: var(--accent); transform: translateX(4px); }
+    .post-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #0f2744, #162444);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    .post-info h4 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .post-info h4 a { color: var(--text); text-decoration: none; }
+    .post-info h4 a:hover { color: var(--accent); }
+    .post-info p { color: var(--muted); font-size: 13px; line-height: 1.5; margin-bottom: 10px; }
+    .post-footer { display: flex; align-items: center; gap: 10px; }
+    .read-time { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+
+    /* ── SIDEBAR ── */
+    .sidebar { display: flex; flex-direction: column; gap: 24px; }
+    .widget {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .widget-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 16px;
+      font-family: var(--mono);
+    }
+
+    /* Firm ratings */
+    .firm-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .firm-row:last-child { border-bottom: none; }
+    .firm-name { font-size: 14px; font-weight: 500; }
+    .firm-score {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .score-high { color: var(--green); }
+    .score-mid  { color: #facc15; }
+    .score-low  { color: var(--red); }
+    .stars { color: #facc15; font-size: 11px; margin-left: 6px; }
+
+    /* Newsletter */
+    .newsletter p { color: var(--muted); font-size: 13px; margin-bottom: 14px; }
+    .input-row { display: flex; flex-direction: column; gap: 8px; }
+    .input-row input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 13px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .input-row input:focus { border-color: var(--accent); }
+    .input-row input::placeholder { color: var(--muted); }
+    .sub-btn {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
+      font-weight: 700;
+      font-family: var(--sans);
+      font-size: 13px;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    .sub-btn:hover { opacity: .85; }
+
+    /* Hot topics */
+    .topic-chip {
+      display: inline-block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin: 4px 4px 0 0;
+      text-decoration: none;
+      transition: all .2s;
+    }
+    .topic-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Alert widget */
+    .alert-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .alert-item:last-child { border-bottom: none; }
+    .alert-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .dot-red   { background: var(--red); }
+    .dot-green { background: var(--green); }
+    .dot-yellow{ background: #facc15; }
+    .alert-text { font-size: 13px; color: var(--muted); line-height: 1.4; }
+    .alert-text strong { color: var(--text); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 40px 32px 24px;
+      text-align: center;
+    }
+    footer .logo { margin-bottom: 12px; font-size: 18px; }
+    footer p { color: var(--muted); font-size: 13px; max-width: 480px; margin: 0 auto 20px; }
+    .footer-links { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+    .footer-links a { color: var(--muted); font-size: 13px; text-decoration: none; }
+    .footer-links a:hover { color: var(--accent); }
+    .copyright { font-size: 12px; color: var(--border); font-family: var(--mono); }
+
+    /* ── LOAD MORE ── */
+    .load-more-wrap { text-align: center; margin-top: 8px; }
+    .load-more {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--sans);
+      font-size: 14px;
+      padding: 12px 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .load-more:hover { border-color: var(--accent); color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <span>FTMO <span class="up">✓ Active</span></span>
+    <span>Funding Pips <span class="up">✓ Active</span></span>
+    <span>MyFundedFX <span class="up">✓ Active</span></span>
+    <span>The Funded Trader <span class="down">⚠ Paused</span></span>
+    <span>FundedNext <span class="up">✓ Active</span></span>
+    <span>Topstep <span class="up">✓ Active</span></span>
+    <span>Apex Trader <span class="up">✓ Active</span></span>
+    <span>E8 Markets <span class="up">✓ Active</span></span>
+    <span>FTMO <span class="up">✓ Active</span></span>
+    <span>Funding Pips <span class="up">✓ Active</span></span>
+    <span>MyFundedFX <span class="up">✓ Active</span></span>
+    <span>The Funded Trader <span class="down">⚠ Paused</span></span>
+    <span>FundedNext <span class="up">✓ Active</span></span>
+    <span>Topstep <span class="up">✓ Active</span></span>
+    <span>Apex Trader <span class="up">✓ Active</span></span>
+    <span>E8 Markets <span class="up">✓ Active</span></span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Prop<span>Firm</span>CFD</div>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">Reviews</a>
+    <a href="#">News</a>
+    <a href="#">Strategy</a>
+    <a href="#">Compare</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">🔴 Live Updates Daily</div>
+  <h1>Your Edge in the <em>Funded Trading</em> World</h1>
+  <p>Daily prop firm reviews, rule changes, payout news, and strategies — so you never miss an opportunity or a warning.</p>
+  <div class="hero-btns">
+    <a href="#posts" class="btn-primary">Read Latest Posts</a>
+    <a href="#newsletter" class="btn-outline">Get Alerts</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">40+</div>
+    <div class="stat-label">Prop Firms Tracked</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">Daily</div>
+    <div class="stat-label">Blog Updates</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">Independent Reviews</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">Free</div>
+    <div class="stat-label">Always</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main-wrap" id="posts">
+
+  <!-- LEFT: POSTS -->
+  <main>
+    <div class="section-header">
+      <h2>Latest Posts</h2>
+      <div class="line"></div>
+      <div class="badge">NEW</div>
+    </div>
+
+    <!-- FEATURED POST -->
+    <div class="featured-card">
+      <div class="featured-img">📊</div>
+      <div class="featured-body">
+        <div class="post-meta">
+          <span class="category-tag cat-review">Review</span>
+          <span class="post-date">29 Jul 2026</span>
+        </div>
+        <h3><a href="Fundingpipsflex.html">Funding Pips Flex Challenge 2026: Complete Review & What Changed</a></h3>
+        <p>Funding Pips ne apna Flex Challenge update kiya hai — naye rules, lower fees, aur faster payouts. Kya ab yeh best prop firm hai beginners ke liye? Humne poora test kiya aur sab kuch bataya.</p>
+        <a href="Fundingpipsflex.html" class="read-more">Read Full Review →</a>
+      </div>
+    </div>
+
+    <!-- POST CARDS -->
+    <div class="post-card">
+      <div class="post-icon">⚠️</div>
+      <div class="post-info">
+        <div class="post-meta">
+          <span class="category-tag cat-warning">Warning</span>
+          <span class="post-date">28 Jul 2026</span>
+        </div>
+        <h4><a href="#">The Funded Trader Payouts Suspended – What You Need to Know</a></h4>
+        <p>TFT ne temporarily payouts band kar diye hain. Agar aapka account yahan hai, toh yeh zaroori update padho.</p>
+        <div class="post-footer">
+          <a href="#" class="read-more">Read More →</a>
+          <span class="read-time">3 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <div class="post-icon">🏆</div>
+      <div class="post-info">
+        <div class="post-meta">
+          <span class="category-tag cat-review">Review</span>
+          <span class="post-date">27 Jul 2026</span>
+        </div>
+        <h4><a href="#">FTMO vs FundedNext 2026: Head-to-Head Comparison</a></h4>
+        <p>Dono popular hain, lekin aapke liye kaunsa better hai? Rules, fees, profit split aur payout speed compare kiya.</p>
+        <div class="post-footer">
+          <a href="#" class="read-more">Read More →</a>
+          <span class="read-time">6 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <div class="post-icon">📈</div>
+      <div class="post-info">
+        <div class="post-meta">
+          <span class="category-tag cat-strategy">Strategy</span>
+          <span class="post-date">26 Jul 2026</span>
+        </div>
+        <h4><a href="#">5 Risk Management Rules to Pass Any Prop Firm Challenge</a></h4>
+        <p>Challenge fail karne ki sabse badi wajah risk management nahi — rules. Yeh 5 rules follow karo aur consistent raho.</p>
+        <div class="post-footer">
+          <a href="#" class="read-more">Read More →</a>
+          <span class="read-time">5 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <div class="post-icon">💰</div>
+      <div class="post-info">
+        <div class="post-meta">
+          <span class="category-tag cat-news">News</span>
+          <span class="post-date">25 Jul 2026</span>
+        </div>
+        <h4><a href="#">E8 Markets New 80/20 Profit Split – Is It Now the Best Deal?</a></h4>
+        <p>E8 Markets ne profit split improve kiya 80% tak. Naye traders ke liye yeh ek bada signal hai. Full breakdown yahan.</p>
+        <div class="post-footer">
+          <a href="#" class="read-more">Read More →</a>
+          <span class="read-time">4 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <div class="post-icon">🧪</div>
+      <div class="post-info">
+        <div class="post-meta">
+          <span class="category-tag cat-strategy">Strategy</span>
+          <span class="post-date">24 Jul 2026</span>
+        </div>
+        <h4><a href="#">How to Pass a 2-Step Evaluation in 14 Days (Real Trader's Method)</a></h4>
+        <p>Ek real funded trader ne share kiya apna exact plan — kaunse pairs trade kiye, kab entry li, aur kaise drawdown manage kiya.</p>
+        <div class="post-footer">
+          <a href="#" class="read-more">Read More →</a>
+          <span class="read-time">7 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="load-more-wrap">
+      <button class="load-more">Load More Posts ↓</button>
+    </div>
+  </main>
+
+  <!-- RIGHT: SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- Firm Ratings -->
+    <div class="widget">
+      <div class="widget-title">🏅 Top Rated Firms</div>
+      <div class="firm-row">
+        <span class="firm-name">Funding Pips</span>
+        <span><span class="firm-score score-high">9.4</span><span class="stars">★★★★★</span></span>
+      </div>
+      <div class="firm-row">
+        <span class="firm-name">FTMO</span>
+        <span><span class="firm-score score-high">9.1</span><span class="stars">★★★★★</span></span>
+      </div>
+      <div class="firm-row">
+        <span class="firm-name">FundedNext</span>
+        <span><span class="firm-score score-high">8.8</span><span class="stars">★★★★☆</span></span>
+      </div>
+      <div class="firm-row">
+        <span class="firm-name">E8 Markets</span>
+        <span><span class="firm-score score-mid">8.2</span><span class="stars">★★★★☆</span></span>
+      </div>
+      <div class="firm-row">
+        <span class="firm-name">Apex Trader</span>
+        <span><span class="firm-score score-mid">7.9</span><span class="stars">★★★★☆</span></span>
+      </div>
+      <div class="firm-row">
+        <span class="firm-name">The Funded Trader</span>
+        <span><span class="firm-score score-low">4.1</span><span class="stars">★★☆☆☆</span></span>
+      </div>
+    </div>
+
+    <!-- Alerts -->
+    <div class="widget">
+      <div class="widget-title">🔔 Recent Alerts</div>
+      <div class="alert-item">
+        <div class="alert-dot dot-red"></div>
+        <div class="alert-text"><strong>The Funded Trader</strong> — Payouts suspended as of Jul 27</div>
+      </div>
+      <div class="alert-item">
+        <div class="alert-dot dot-green"></div>
+        <div class="alert-text"><strong>Funding Pips</strong> — Flex plan discount active until Jul 31</div>
+      </div>
+      <div class="alert-item">
+        <div class="alert-dot dot-yellow"></div>
+        <div class="alert-text"><strong>FTMO</strong> — News trading rules updated for Aug 2026</div>
+      </div>
+      <div class="alert-item">
+        <div class="alert-dot dot-green"></div>
+        <div class="alert-text"><strong>E8 Markets</strong> — New 80% profit split launched</div>
+      </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="widget newsletter" id="newsletter">
+      <div class="widget-title">📬 Free Alerts</div>
+      <p>Prop firm news, rule changes & warnings — directly in your inbox. Free, no spam.</p>
+      <div class="input-row">
+        <input type="email" placeholder="your@email.com"/>
+        <button class="sub-btn">Subscribe Free</button>
+      </div>
+    </div>
+
+    <!-- Topics -->
+    <div class="widget">
+      <div class="widget-title">🔥 Hot Topics</div>
+      <a href="#" class="topic-chip">FTMO</a>
+      <a href="#" class="topic-chip">Funding Pips</a>
+      <a href="#" class="topic-chip">2-Step Challenge</a>
+      <a href="#" class="topic-chip">Instant Funding</a>
+      <a href="#" class="topic-chip">Payout Issues</a>
+      <a href="#" class="topic-chip">Risk Management</a>
+      <a href="#" class="topic-chip">News Trading</a>
+      <a href="#" class="topic-chip">Forex</a>
+      <a href="#" class="topic-chip">Funded Trader</a>
+      <a href="#" class="topic-chip">Profit Split</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">Prop<span style="color:var(--accent)">Firm</span>CFD</div>
+  <p>Independent prop firm reviews, daily news and trader resources. Not affiliated with any firm.</p>
+  <div class="footer-links">
+    <a href="#">Home</a>
+    <a href="#">Reviews</a>
+    <a href="#">News</a>
+    <a href="#">Strategy</a>
+    <a href="#">Disclaimer</a>
+    <a href="#">Privacy</a>
+  </div>
+  <div class="copyright">© 2026 PropFirmCFD Blog · All rights reserved · Independent & Unbiased</div>
+</footer>
+
+</body>
+</html>
